@@ -19,13 +19,14 @@ function compareArrays( arr1, arr2 ) {
 function memorize(fn, limit) {
   let memory = [];
   return function(...args) {
-  if (memory.find(a => a.args.length === args.length && a.args.every((a, i) => a === args[i]))) {
-      console.log('Такой массив уже существует')
-      return fn(...args);
-    } else {
-        memory.push({args: args, result: fn(...args)});
-        console.log(memory);
-     }
+    let memoryFind = memory.find(a => compareArrays(a.args, args));
+
+    if (memoryFind) {
+      console.log('Такой массив уже существует');
+      return memoryFind.result;
+    }
+  
+    memory.push({args: args, result: fn(...args)});
   
     if (memory.length > limit) {
       memory.shift();
