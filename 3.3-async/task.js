@@ -36,17 +36,10 @@ class AlarmClock {
   }
 
   start() {
-    function checkClock (alarmCollectionObj) {
-      if (alarmCollectionObj.time === getCurrentFormattedTime()) {
-        return alarmCollectionObj.callback();
-      }
-    }
-
     if (this.timerId === null) {
-      function printCheckClock() {
-        this.alarmCollection.forEach(a => checkClock(a));
-      }
-      this.timerId = setInterval( printCheckClock , 60000 );
+      this.timerId = setInterval( () => this.alarmCollection.forEach(a => {if (a.time === getCurrentFormattedTime()) {
+      return a.callback();
+      }}) , 60000 );
     }
   }
 
@@ -65,4 +58,17 @@ class AlarmClock {
     clearInterval(this.timerId);
     this.alarmCollection.splice(0);
   }
+}
+
+function testCase() {
+  console.time('1');
+  
+  const AlarmClockObj = new AlarmClock;
+  AlarmClockObj.addClock('22:22', () => console.log('Привет!'), 1);
+  AlarmClockObj.addClock('22:23', () => {console.log('И тебе Привет!'); AlarmClockObj.removeClock(2)}, 2);
+  AlarmClockObj.addClock('22:24', () => {console.log('Всем Привет!'); 
+  AlarmClockObj.clearAlarms(); AlarmClockObj.printAlarms()}, 3);
+  AlarmClockObj.start();
+
+  console.timeEnd('1');
 }
